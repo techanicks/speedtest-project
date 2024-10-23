@@ -10,81 +10,79 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 250px;
-            height: 100vh;
             align-items: center;
             justify-content: center;
-            background-image: url('https://images.pexels.com/photos/696644/pexels-photo-696644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'); /* Replace 'background.jpg' with the actual image file */
-        }
-        .result {
-            display: none;  /* Initially hide the result section */
-            margin-top: 20px;
-            background-color: rgb(214, 213, 213);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            display: none;
-            margin-top: 20px;
-            text-align: center;
-            color: #28a745;
-        }
-        h1 {
-            color: rgb(7, 3, 3);
-            margin-bottom: 20px;
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            }
-        #loading {
-            display: none;  /* Hide the "Processing..." text initially */
+            background-image: url('https://images.pexels.com/photos/696644/pexels-photo-696644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
         }
         button {
-            background-color: #28a745;
-            color: white;
             padding: 50px 85px;
-            border: white;
-            border-radius: 40px;
-            font-size: 24px;
+            font-size: 16px;
             cursor: pointer;
+            color: rgb(254, 255, 254);
+            border-radius: 40px;
+            background-color: green;
         }
         button:hover {
             background-color: #218838;
         }
+        /* Add this in your inline CSS or external stylesheet (styles.css) */
+.beautiful-heading {
+    font-family: 'Arial', sans-serif; /* Clean and modern font */
+    font-size: 48px; /* Large font size for prominence */
+    color: #078b07; /* Nice green color */
+    text-align: center; /* Center the text horizontally */
+    text-transform: uppercase; /* Makes the text uppercase for impact */
+    letter-spacing: 2px; /* Adds spacing between letters for elegance */
+    margin-top: 50px; /* Space at the top */
+    padding: 10px; /* Padding around the text */
+    background: linear-gradient(135deg, #080807, #8a4003); /* Gradient background */
+    -webkit-background-clip: text; /* Clips the gradient to the text */
+    -webkit-text-fill-color: transparent; /* Makes the gradient fill the text */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+}
+
+        #results {
+            margin-top: 20px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>ISND(CHURCHGATE) BANDWIDTH MONITOR</h1>
-    <button onclick="runSpeedTest()">Run Speed Test</button>
+    <h1 class="beautiful-heading">ISND(CHURCHGATE) BANDWIDTH MONITOR</h1>
+    <button id="run-test">Run Speed Test</button>
 
-    <p id="loading">Processing... Please wait.</p>
+    <div id="results"></div>
 
-    <div class="result">
-        <h3>Speed Test Results:</h3>
-        <p><strong>Download Speed:</strong> <span id="download"></span> Mbps</p>
-        <p><strong>Upload Speed:</strong> <span id="upload"></span> Mbps</p>
-        <p><strong>Ping:</strong> <span id="ping"></span> ms</p>
-        <p><strong>Date:</strong> <span id="date"></span></p>
-        <p><strong>Time:</strong> <span id="time"></span></p>
-    </div>
+    <a id="download-csv" href="/download_csv" style="display:none;">Download CSV File</a>
 
     <script>
-        function runSpeedTest() {
-            document.getElementById("loading").style.display = "block";  // Show "Processing..."
-            document.querySelector(".result").style.display = "none";  // Hide the result section
-
-            // Fetch speed test result from Python backend
+        document.getElementById('run-test').addEventListener('click', function() {
+            document.getElementById('results').innerHTML = "Running speed test...";
+            
             fetch('/run_test')
-            .then(response => response.json())
-            .then(data => {
-                // Populate the HTML with the results from the speed test
-                document.getElementById("download").textContent = data.download_speed;
-                document.getElementById("upload").textContent = data.upload_speed;
-                document.getElementById("ping").textContent = data.ping;
-                document.getElementById("date").textContent = data.date;
-                document.getElementById("time").textContent = data.time;
-
-                document.getElementById("loading").style.display = "none";  // Hide "Processing..."
-                document.querySelector(".result").style.display = "block";  // Show the result section
-            })
-            .catch(error => console.error('Error:', error));
-        }
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('results').innerHTML = `
+                        <p>Download Speed: ${data.download_speed} Mbps</p>
+                        <p>Upload Speed: ${data.upload_speed} Mbps</p>
+                        <p>Ping: ${data.ping} ms</p>
+                        <p>Timestamp: ${data.timestamp}</p>
+                    `;
+                    document.getElementById('download-csv').style.display = 'inline-block'; // Show download link
+                })
+                .catch(error => {
+                    document.getElementById('results').innerHTML = "Error running speed test.";
+                    console.error('Error:', error);
+                });
+        });
     </script>
 </body>
 </html>
