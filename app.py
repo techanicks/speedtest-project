@@ -22,11 +22,6 @@ def perform_speed_test():
         print(f"Error during speed test: {e}")
         return 0, 0, 0, "Error"
         
-
-        # Find the best server based on your location
-    best_server = st.get_best_server()
-    print(f"Best server found: {best_server['host']} located in {best_server['name']}, {best_server['country']}")
-
 # Function to save results to CSV
 def save_to_csv(download, upload, ping, server):
     header = ['Timestamp', 'Download Speed (Mbps)', 'Upload Speed (Mbps)', 'Ping (ms)', 'Server']
